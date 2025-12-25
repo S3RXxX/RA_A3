@@ -1,6 +1,6 @@
 import randomhash
-from cardinality_estimator import CardinaltyEstimator
+from cardinality_estimator import CardinalityEstimator
 
-class REC(CardinaltyEstimator):
+class REC(CardinalityEstimator):
     def __init__(self):
         super().__init__()

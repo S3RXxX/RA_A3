@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import random
 import randomhash
+from utils import datasets_path, datasets
 
 class CardinalityEstimator(ABC):
     """
@@ -10,7 +11,7 @@ class CardinalityEstimator(ABC):
     def __init__(self, seed=None, num_hashes=10):
         self.seed = seed
         random.seed(self.seed)
-        rfh = randomhash.RandomHashFamily(count=num_hashes)
+        self.rfh = randomhash.RandomHashFamily(count=num_hashes)
         self.reset()
 
     @abstractmethod
@@ -28,6 +29,11 @@ class CardinalityEstimator(ABC):
         """Return the cardinality estimate."""
         pass
 
-    def hs(self):
+    def hs(self, element):
         """Compute the family of hashes"""
-        pass
+        return self.rfh.hashes(element)
+
+    def compute(self, file):
+        with open(datasets_path+datasets[0]+".txt") as f:
+            for word in f.read().splitlines():
+                self.add(word)
