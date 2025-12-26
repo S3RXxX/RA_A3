@@ -5,7 +5,7 @@ class PCSA(CardinalityEstimator):
     """
     Probabilistic Counting with Stochastic Averaging (PCSA).
     """
-    def __init__(self, bitmap_size=64, seed=None):
+    def __init__(self, bitmap_size=32, seed=None):
         self.bitmap_size = bitmap_size
         self.phi = 0.77351  # Correction factor
         super().__init__(seed)
@@ -17,12 +17,12 @@ class PCSA(CardinalityEstimator):
         """
         Number of leading zeros in a 64-bit integer.
         """
-        if x == 0:
-            return 64
-        return 64 - x.bit_length()
+        assert x.bit_length() <= 32
+        return self.bitmap_size - x.bit_length()
 
     def add(self, element):
         y = self.hs(element)[0]
+        # print(y, self.hs(element)[0])
         p = self._leading_zeros(y)
 
         if p < self.bitmap_size:
@@ -44,5 +44,5 @@ if __name__=="__main__":  # just for testing, remove later
     pcsa = PCSA(seed=373)
     # pcsa.add("a")
     pcsa.compute("a")
-    print(pcsa.bitmap)
+    # print(pcsa.bitmap)
 
