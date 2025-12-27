@@ -33,8 +33,8 @@ class KMV(CardinalityEstimator):
         if len(self.S) < self.k:
             return len(self.S)
         v_k = -self.S[0]/ (2**self.bitmap_size) # normalize hash to (0,1]
-        # return (self.k - 1) / v_k
-        return self.k / v_k
+        return (self.k - 1) / v_k
+        # return self.k / v_k
     
 if __name__=="__main__":
     kmv = KMV(k=256)
