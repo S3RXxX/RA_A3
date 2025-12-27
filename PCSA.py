@@ -1,48 +1,42 @@
 from cardinality_estimator import CardinalityEstimator
+from utils import rho
 import math
 
 class PCSA(CardinalityEstimator):
     """
     Probabilistic Counting with Stochastic Averaging (PCSA).
     """
-    def __init__(self, bitmap_size=32, seed=None):
+    def __init__(self, m=128, bitmap_size=32, seed=None):
+        self.m = m
         self.bitmap_size = bitmap_size
         self.phi = 0.77351  # Correction factor
+        self.red_size = self.bitmap_size-math.ceil(math.log(self.m, 2))
         super().__init__(seed)
 
     def reset(self):
-        self.bitmap = [0] * self.bitmap_size
-
-    def _leading_zeros(self, x: int) -> int:
-        """
-        Number of leading zeros in a 64-bit integer.
-        """
-        assert x.bit_length() <= 32
-        return self.bitmap_size - x.bit_length()
+        self.bitmaps = [[0] * self.bitmap_size for _ in range(self.m)]
 
     def add(self, element):
         y = self.hs(element)[0]
-        # print(y, self.hs(element)[0])
-        p = self._leading_zeros(y)
+        alpha = y%self.m
+        index = rho(y//self.m, size=self.red_size)
+        self.bitmaps[alpha][index] = 1
 
-        if p < self.bitmap_size:
-            self.bitmap[p] = 1
-        # print("bitmap", self.bitmap)
 
     def estimate(self) -> float:
-        R = 0
-        for bit in self.bitmap:
-            if bit == 1:
-                R += 1
-            else:
-                break
+        S = 0
+        for i in range(self.m):
+            R = 0
+            while self.bitmaps[i][R] and (R<self.bitmap_size):
+                R+=1
+            S += R
 
-        return self.phi * (2 ** R)
+        return int((self.m/self.phi)*(2**(S/self.m)))
     
 
 if __name__=="__main__":  # just for testing, remove later
     pcsa = PCSA(seed=373)
     # pcsa.add("a")
     pcsa.compute("a")
-    # print(pcsa.bitmap)
+    # print(pcsa.bitmaps)
 
