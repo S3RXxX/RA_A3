@@ -35,4 +35,4 @@ if __name__=="__main__":
     ######################################################################
 
     ### Adding more cardinality estimation algorithms 
-    # (Probabilistic Counting (PCSA), KMV (K Minimum Values), MinCount, Adaptive Sampling, variants of HLL, . . . ) 
+    # (Probabilistic Counting (PCSA), KMV (K Minimum Values), MinCount, Adaptive Sampling, LogLog) 
