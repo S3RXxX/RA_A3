@@ -6,8 +6,9 @@ class REC(CardinalityEstimator):
     """
     Recordinality estimator.
     """
-    def __init__(self, k, seed=None):
+    def __init__(self, k, seed=None, do_hash=True):
         self.k = k
+        self.do_hash=do_hash
         super().__init__(seed=seed)
 
     def reset(self):
@@ -17,7 +18,10 @@ class REC(CardinalityEstimator):
 
     def add(self, element):
         """Compute the k-records"""
-        y = self.hs(element)[0]
+        if self.do_hash:
+            y = self.hs(element)[0]
+        else:
+            y = element
 
         # if element in self.S:
         #     return
@@ -42,7 +46,4 @@ class REC(CardinalityEstimator):
     def estimate(self):
         """Return Z"""
         return self.k*((1+(1/self.k))**(self.R-self.k+1))-1
-    
-if __name__=="__main__":
-    rec = REC(k=256)
-    rec.compute("a")
+

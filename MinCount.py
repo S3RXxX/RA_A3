@@ -38,6 +38,3 @@ class MinCount(CardinalityEstimator):
 
         return Z
     
-if __name__=="__main__":
-    minCount = MinCount(m=256)
-    minCount.compute("a")

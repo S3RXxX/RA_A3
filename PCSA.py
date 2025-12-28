@@ -34,9 +34,3 @@ class PCSA(CardinalityEstimator):
         return int((self.m/self.phi)*(2**(S/self.m)))
     
 
-if __name__=="__main__":  # just for testing, remove later
-    pcsa = PCSA(seed=373)
-    # pcsa.add("a")
-    pcsa.compute("a")
-    # print(pcsa.bitmaps)
-

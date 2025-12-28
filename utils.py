@@ -2,12 +2,12 @@ import math
 from scipy.integrate import quad
 
 SEED = 373
-SEEDS = []
+seeds = [13323, 60340, 19128, 48828, 14150, 40817, 31592, 58201, 27433, 35026]
 
 datasets_path = "./datasets/"
 datasets = ["crusoe", "dracula", "iliad", "mare-balena", "midsummer-nights-dream",
             "quijote", "valley-fear", "war-peace"]
-datasets = ["synthetic_1000000_100000_1.0"]
+# datasets = ["synthetic_1000000_100000_1.0"]
 
 def to_bin(x, size=32):
     """Returns binary representation of x with size as the string length"""

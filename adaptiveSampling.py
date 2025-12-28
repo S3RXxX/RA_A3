@@ -46,7 +46,3 @@ class AdaptiveSampling(CardinalityEstimator):
 
     def estimate(self):
         return len(self.S) * (2 ** self.depth)
-
-if __name__ == "__main__":
-    adaptiveSampling = AdaptiveSampling(m=256)
-    adaptiveSampling.compute("a")

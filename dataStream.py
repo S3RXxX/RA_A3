@@ -2,7 +2,7 @@ import random
 import bisect
 import itertools
 import os
-
+from utils import datasets_path
 
 
 class DataStream:
@@ -68,9 +68,8 @@ if __name__=="__main__":
     alpha = 1.0
     seed = 373
 
-    datasets_dir="datasets"
     filename = f"synthetic_{N}_{n}_{alpha}.txt"
-    output_path = os.path.join(datasets_dir, filename)
+    output_path = os.path.join(datasets_path, filename)
 
     dataGen = DataStream(n=n, alpha=alpha, seed=seed)
     dataGen.generate_zipf_stream_to_file(N, output_path)

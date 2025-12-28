@@ -36,6 +36,3 @@ class KMV(CardinalityEstimator):
         return (self.k - 1) / v_k
         # return self.k / v_k
     
-if __name__=="__main__":
-    kmv = KMV(k=256)
-    kmv.compute("a")

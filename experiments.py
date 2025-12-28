@@ -2,12 +2,23 @@ from HLL import HLL
 from REC import REC
 from dataStream import DataStream
 
-seeds = [13323, 60340, 19128, 48828, 14150, 40817, 31592, 58201, 27433, 35026]
+from utils import datasets_path, datasets, seeds
+
+
 
 if __name__=="__main__":
-    pass
+
+    # check cardinalities using .dat files
+    for data in datasets:
+        c=0
+        with open(datasets_path+data+".dat") as f:
+            for word in f.read().splitlines():
+                c+=1
+        print(f"{data} {c}")
 
     # HLL REC table comparison estimation vs true cardinalities
+    ### Adding more cardinality estimation algorithms 
+    # (Probabilistic Counting (PCSA), KMV (K Minimum Values), MinCount, Adaptive Sampling, LogLog) 
     ## real data
 
     ## synthetic data
@@ -34,5 +45,4 @@ if __name__=="__main__":
 
     ######################################################################
 
-    ### Adding more cardinality estimation algorithms 
-    # (Probabilistic Counting (PCSA), KMV (K Minimum Values), MinCount, Adaptive Sampling, LogLog) 
+

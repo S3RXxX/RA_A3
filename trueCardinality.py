@@ -16,7 +16,3 @@ class TrueCardinality(CardinalityEstimator):
     def estimate(self) -> float:
         return len(self.s)
     
-if __name__ == "__main__":
-    ce = TrueCardinality()
-    ce.compute("a")
-    # print(ce.estimate())

@@ -34,16 +34,16 @@ class CardinalityEstimator(ABC):
 
     def compute(self, file):
 
-        # with open(datasets_path+file+".txt") as f:
-        #     for word in f.read().splitlines():
-        #         self.add(word)
-        # return self.estimate()
+        with open(datasets_path+file+".txt") as f:
+            for word in f.read().splitlines():
+                self.add(word)
+        return self.estimate()
 
-        for i in range(len(datasets)):  # temporal to test
-            self.reset()
-            with open(datasets_path+datasets[i]+".txt") as f:
-                for word in f.read().splitlines():
-                    self.add(word)
-            print(f"{datasets[i]} {self.estimate()}")
+        # for i in range(len(datasets)):  # temporal to test
+        #     self.reset()
+        #     with open(datasets_path+datasets[i]+".txt") as f:
+        #         for word in f.read().splitlines():
+        #             self.add(word)
+        #     print(f"{datasets[i]} {self.estimate()}")
 
 

@@ -33,6 +33,3 @@ class LogLog(HLL):
 
         return (math.gamma(-1/m)*((2**(-1/m)-1)/math.log(2)))**(-m)
     
-if __name__=="__main__":
-    loglog = LogLog(seed=42)
-    loglog.compute("a")

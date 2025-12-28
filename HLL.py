@@ -72,8 +72,3 @@ class HLL(CardinalityEstimator):
         # else:
         #     return 0.7213 / (1 + 1.079 / m)
     
-if __name__=="__main__":
-    seed = 373
-    hll = HLL(seed=seed, b=8)
-    hll.compute("a")
-    # print(hll._rho(1))
