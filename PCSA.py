@@ -6,11 +6,12 @@ class PCSA(CardinalityEstimator):
     """
     Probabilistic Counting with Stochastic Averaging (PCSA).
     """
-    def __init__(self, m=64, bitmap_size=32, seed=None):
-        self.m = m
+    def __init__(self, b=6, bitmap_size=32, seed=None):
+        self.b = b
+        self.m = 2**b
         self.bitmap_size = bitmap_size
         self.phi = 0.77351  # Correction factor
-        self.red_size = self.bitmap_size-math.ceil(math.log(self.m, 2))
+        self.red_size = self.bitmap_size-b
         super().__init__(seed)
 
     def reset(self):

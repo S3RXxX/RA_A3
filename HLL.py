@@ -13,7 +13,7 @@ class HLL(CardinalityEstimator):
         # print("Alpha_m obtained")
 
         self.bitmap_size = bitmap_size
-        self.red_size = self.bitmap_size-math.ceil(math.log(self.m, 2))
+        self.red_size = self.bitmap_size-b
         super().__init__(seed)
 
     def reset(self):

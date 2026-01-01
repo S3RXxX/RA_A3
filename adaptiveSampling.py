@@ -6,8 +6,9 @@ class AdaptiveSampling(CardinalityEstimator):
     Adaptive Sampling cardinality estimator.
     """
 
-    def __init__(self, m=64, seed=None):
-        self.m = m
+    def __init__(self, b=6, seed=None):
+        self.b = b
+        self.m = 2**b
         self.bitmap_size = 32
         super().__init__(seed=seed)
 

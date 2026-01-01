@@ -6,8 +6,9 @@ class MinCount(CardinalityEstimator):
     MinCount with stochastic averaging (Lumbroso, CORE algorithm).
     """
 
-    def __init__(self, m=128, seed=None):
-        self.m = m
+    def __init__(self, b=6, seed=None):
+        self.b = b
+        self.m = 2**b
         super().__init__(seed=seed)
 
     def reset(self):

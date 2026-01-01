@@ -4,6 +4,7 @@ from scipy.integrate import quad
 SEED = 373
 seeds = [13323, 60340, 19128, 48828, 14150, 40817, 31592, 58201, 27433, 35026]
 
+results_path = "./results/"
 datasets_path = "./datasets/"
 datasets = ["crusoe", "dracula", "iliad", "mare-balena", "midsummer-nights-dream",
             "quijote", "valley-fear", "war-peace"]
@@ -47,6 +48,12 @@ def J0(m, T=50.0):
 
     val, _ = quad(integrand, 0, T, epsabs=1e-12, epsrel=1e-12)
     return val
+
+
+def execute_save_all(predictors, ds, output_path, csv_name):
+    for predictor in predictors:
+        predictor.reset()
+        results = predictor.compute(ds)
 
 
 
