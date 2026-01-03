@@ -6,8 +6,12 @@ class REC(CardinalityEstimator):
     """
     Recordinality estimator.
     """
-    def __init__(self, k, seed=None, do_hash=True):
-        self.k = k
+    def __init__(self, b=None, k=64, seed=None, do_hash=True):
+        self.b = b
+        if self.b is not None:
+            self.k = 2**b
+        else:
+            self.k = k
         self.do_hash=do_hash
         super().__init__(seed=seed)
 
@@ -47,3 +51,5 @@ class REC(CardinalityEstimator):
         """Return Z"""
         return self.k*((1+(1/self.k))**(self.R-self.k+1))-1
 
+    def __repr__(self):
+        return f"REC(k={self.k}, do_hash={self.do_hash})"

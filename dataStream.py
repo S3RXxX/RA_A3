@@ -63,18 +63,21 @@ class DataStream:
     
 
 if __name__=="__main__":
-    N = 1_000_000
-    n = 100_000
-    alpha = 1.0
+    Ns = [5, 10, 50, 100]
+    ns = [1000, 5000, 10000, 50000]
+    alphas = [0.0, 0.5, 1.0, 1.5, 50.0]
     seed = 373
+    for N_mult in Ns:
+        for n in ns:
+            N = N_mult*n
+            for alpha in alphas:
+                filename = f"synthetic_{N}_{n}_{alpha}.txt"
+                output_path = os.path.join(datasets_path, filename)
 
-    filename = f"synthetic_{N}_{n}_{alpha}.txt"
-    output_path = os.path.join(datasets_path, filename)
+                dataGen = DataStream(n=n, alpha=alpha, seed=seed)
+                dataGen.generate_zipf_stream_to_file(N, output_path)
 
-    dataGen = DataStream(n=n, alpha=alpha, seed=seed)
-    dataGen.generate_zipf_stream_to_file(N, output_path)
-
-    print(f"Synthetic dataset written to {output_path}")
+                print(f"Synthetic dataset {filename} written to {output_path}")
 
     # dataGen = DataStream(n=n, alpha=alpha, seed=seed)
     # Z = dataGen.generate_zipf_stream(N)

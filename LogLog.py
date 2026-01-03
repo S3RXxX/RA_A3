@@ -33,3 +33,6 @@ class LogLog(HLL):
 
         return (math.gamma(-1/m)*((2**(-1/m)-1)/math.log(2)))**(-m)
     
+    def __repr__(self):
+        return f"LogLog(m={self.m})"
+    

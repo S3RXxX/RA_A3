@@ -71,4 +71,7 @@ class HLL(CardinalityEstimator):
         #     return 0.709
         # else:
         #     return 0.7213 / (1 + 1.079 / m)
+
+    def __repr__(self):
+        return f"HLL(m={self.m})"
     

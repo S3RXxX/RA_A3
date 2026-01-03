@@ -34,4 +34,7 @@ class PCSA(CardinalityEstimator):
 
         return int((self.m/self.phi)*(2**(S/self.m)))
     
+    def __repr__(self):
+        return f"PCSA(m={self.m})"
+    
 

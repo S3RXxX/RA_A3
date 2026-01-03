@@ -39,3 +39,6 @@ class MinCount(CardinalityEstimator):
 
         return Z
     
+    def __repr__(self):
+        return f"MinCount(m={self.m})"
+    

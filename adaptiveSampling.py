@@ -35,7 +35,7 @@ class AdaptiveSampling(CardinalityEstimator):
         # if len(self.S) > self.m:
         # c = 0
         while len(self.S) > self.m:
-            c+=1
+            # c+=1
             self.depth += 1
 
             # filter S
@@ -47,3 +47,6 @@ class AdaptiveSampling(CardinalityEstimator):
 
     def estimate(self):
         return len(self.S) * (2 ** self.depth)
+    
+    def __repr__(self):
+        return f"AdaptiveSampling(m={self.m})"

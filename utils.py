@@ -1,5 +1,7 @@
 import math
 from scipy.integrate import quad
+import os
+import pandas as pd
 
 SEED = 373
 seeds = [13323, 60340, 19128, 48828, 14150, 40817, 31592, 58201, 27433, 35026]
@@ -8,7 +10,7 @@ results_path = "./results/"
 datasets_path = "./datasets/"
 datasets = ["crusoe", "dracula", "iliad", "mare-balena", "midsummer-nights-dream",
             "quijote", "valley-fear", "war-peace"]
-# datasets = ["synthetic_1000000_100000_1.0"]
+synthetic_datasets = ['synthetic_1000000_100000_1.0', 'synthetic_1000000_10000_0.0', 'synthetic_1000000_10000_0.5', 'synthetic_1000000_10000_1.0', 'synthetic_1000000_10000_1.5', 'synthetic_1000000_10000_50.0', 'synthetic_100000_10000_0.0', 'synthetic_100000_10000_0.5', 'synthetic_100000_10000_1.0', 'synthetic_100000_10000_1.5', 'synthetic_100000_10000_50.0', 'synthetic_100000_1000_0.0', 'synthetic_100000_1000_0.5', 'synthetic_100000_1000_1.0', 'synthetic_100000_1000_1.5', 'synthetic_100000_1000_50.0', 'synthetic_10000_1000_0.0', 'synthetic_10000_1000_0.5', 'synthetic_10000_1000_1.0', 'synthetic_10000_1000_1.5', 'synthetic_10000_1000_50.0', 'synthetic_2500000_50000_0.0', 'synthetic_2500000_50000_0.5', 'synthetic_2500000_50000_1.0', 'synthetic_2500000_50000_1.5', 'synthetic_2500000_50000_50.0', 'synthetic_250000_50000_0.0', 'synthetic_250000_50000_0.5', 'synthetic_250000_50000_1.0', 'synthetic_250000_50000_1.5', 'synthetic_250000_50000_50.0', 'synthetic_250000_5000_0.0', 'synthetic_250000_5000_0.5', 'synthetic_250000_5000_1.0', 'synthetic_250000_5000_1.5', 'synthetic_250000_5000_50.0', 'synthetic_25000_5000_0.0', 'synthetic_25000_5000_0.5', 'synthetic_25000_5000_1.0', 'synthetic_25000_5000_1.5', 'synthetic_25000_5000_50.0', 'synthetic_5000000_50000_0.0', 'synthetic_5000000_50000_0.5', 'synthetic_5000000_50000_1.0', 'synthetic_5000000_50000_1.5', 'synthetic_5000000_50000_50.0', 'synthetic_500000_10000_0.0', 'synthetic_500000_10000_0.5', 'synthetic_500000_10000_1.0', 'synthetic_500000_10000_1.5', 'synthetic_500000_10000_50.0', 'synthetic_500000_50000_0.0', 'synthetic_500000_50000_0.5', 'synthetic_500000_50000_1.0', 'synthetic_500000_50000_1.5', 'synthetic_500000_50000_50.0', 'synthetic_500000_5000_0.0', 'synthetic_500000_5000_0.5', 'synthetic_500000_5000_1.0', 'synthetic_500000_5000_1.5', 'synthetic_500000_5000_50.0', 'synthetic_50000_10000_0.0', 'synthetic_50000_10000_0.5', 'synthetic_50000_10000_1.0', 'synthetic_50000_10000_1.5', 'synthetic_50000_10000_50.0', 'synthetic_50000_1000_0.0', 'synthetic_50000_1000_0.5', 'synthetic_50000_1000_1.0', 'synthetic_50000_1000_1.5', 'synthetic_50000_1000_50.0', 'synthetic_50000_5000_0.0', 'synthetic_50000_5000_0.5', 'synthetic_50000_5000_1.0', 'synthetic_50000_5000_1.5', 'synthetic_50000_5000_50.0', 'synthetic_5000_1000_0.0', 'synthetic_5000_1000_0.5', 'synthetic_5000_1000_1.0', 'synthetic_5000_1000_1.5', 'synthetic_5000_1000_50.0']
 
 def to_bin(x, size=32):
     """Returns binary representation of x with size as the string length"""
@@ -50,10 +52,34 @@ def J0(m, T=50.0):
     return val
 
 
-def execute_save_all(predictors, ds, output_path, csv_name):
-    for predictor in predictors:
-        predictor.reset()
-        results = predictor.compute(ds)
+def execute_save_all(predictors, bs, datasets, output_path, csv_name, seeds, do_hash_REC=True):
+    os.makedirs(output_path, exist_ok=True)
+    csv_path = os.path.join(output_path, f"{csv_name}.csv")
+    all_results = []
+    for seed in seeds:
+        print(f"seed={seed}")
+        for ds in datasets:
+            print(f"Data stream: {ds}")
+            for b in bs:
+                for predictor in predictors:
+                    if do_hash_REC:
+                        predictor = predictor(b, seed=seed)
+                    else:
+                        predictor = predictor(b, seed=seed, do_hash=False)
+                    predictor.reset()  # just to make sure
+                    result = predictor.compute(ds)
+                    all_results.append({
+                        "Predictor": predictor.__class__.__name__,
+                        "b": b,
+                        "Seed": seed,
+                        "Dataset": ds,
+                        "Result": result
+                    })
+
+            # save name, b, seed, result in a csv named csv_name.csv and in path output_path
+    df = pd.DataFrame(all_results)
+    df.to_csv(csv_path, index=False)
+
 
 
 
