@@ -5,7 +5,6 @@ from KMV import KMV
 from MinCount import MinCount
 from adaptiveSampling import AdaptiveSampling
 from LogLog import LogLog
-from dataStream import DataStream
 from utils import results_path, datasets_path, datasets, seeds, execute_save_all, synthetic_datasets
 
 

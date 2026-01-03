@@ -46,7 +46,9 @@ class HLL(CardinalityEstimator):
         if E <= 2.5 * self.m and V > 0:
             E = self.m * math.log(self.m / V)
         # large range correction
-        if E>(1/30)*2**32:
+        if E>(1/30)*2**32: # and E<2**32:
+            print(E, (1/30)*2**32, E>(1/30)*2**32, E>(1)*2**32)
+            print(self.b, 1-E/2**32)
             E = -2**32*math.log(1-E/2**32)
 
         return E
@@ -56,21 +58,22 @@ class HLL(CardinalityEstimator):
         """
         Bias correction constant αₘ.
         """
-
-        return 1/(m*J0(m))
+        # alpha = 1/(m*J0(m))  # gets too large when m>=1024
+        # print(m, alpha, 0.7213/(1+1.079/m))
+        # return alpha
         
         # constant approximation
         # return 0.72134
 
         # variable approximation
-        # if m == 16:
-        #     return 0.673
-        # elif m == 32:
-        #     return 0.697
-        # elif m == 64:
-        #     return 0.709
-        # else:
-        #     return 0.7213 / (1 + 1.079 / m)
+        if m == 16:
+            return 0.673
+        elif m == 32:
+            return 0.697
+        elif m == 64:
+            return 0.709
+        else:
+            return 0.7213 / (1 + 1.079 / m)
 
     def __repr__(self):
         return f"HLL(m={self.m})"
