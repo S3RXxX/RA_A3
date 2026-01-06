@@ -507,6 +507,52 @@ def rel_error_density(df, b=5, n=9425):
     plt.show()
 
 
+def plot_density_subgrid(df, b_values=range(2, 9), n_cols=3):
+    """
+    Plot KDEs of relative errors for Hash vs No Hash for each memory parameter b
+    using a subgrid layout with properly spaced titles.
+
+    Parameters:
+    - df: DataFrame with columns Predictor, b, Seed, Dataset, Result, True, Hash
+    - b_values: list or range of b values to plot
+    - n_cols: number of columns in the grid
+    """
+
+    # Compute relative error
+    df['rel_error'] = (df['Result'] - df['True']) / df['True']
+
+    n_b = len(b_values)
+    n_rows = int(np.ceil(n_b / n_cols))
+
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(5*n_cols, 4*n_rows), sharex=False, sharey=False)
+    axes = axes.flatten()  # flatten for easy indexing
+
+    for ax, b in zip(axes, b_values):
+        sub = df[df['b'] == b]
+
+        sns.kdeplot(
+            data=sub,
+            x='rel_error',
+            hue='Hash',
+            fill=True,
+            alpha=0.4,
+            linewidth=2,
+            ax=ax
+        )
+        # Move title up using pad
+        ax.set_title(f"b = {b}", fontsize=12, pad=10)  
+        ax.set_xlabel("Relative error $(\\hat{N}-N)/N$", fontsize=10)
+        ax.set_ylabel("Density", fontsize=10)
+        ax.grid(True, linestyle=":", linewidth=0.7)
+
+    # Remove any unused axes
+    for ax in axes[n_b:]:
+        fig.delaxes(ax)
+
+    # Adjust spacing between subplots
+    plt.subplots_adjust(hspace=0.5, wspace=0.3)  
+
+    plt.show()
 
 
 

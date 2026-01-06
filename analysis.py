@@ -1,7 +1,8 @@
 from HLL import HLL
-from utils import results_path, datasets, synthetic_datasets, latex_hash_table, latex_order_table, boxplot, boxplots, latex_hll_rec_table, plot_hll_rec_rse, rel_error_histogram, rel_error_density
+from utils import results_path, datasets, synthetic_datasets, plot_density_subgrid, latex_hash_table, latex_order_table, boxplot, boxplots, latex_hll_rec_table, plot_hll_rec_rse, rel_error_histogram, rel_error_density
 import pandas as pd
 from trueCardinality import TrueCardinality
+import matplotlib.pyplot as plt
 
 
 
@@ -116,24 +117,59 @@ tables["RSE"] = (tables["variance"] ** 0.5) / tables["true_value"]
 
 # line plot RSE hash vs no hash (amb variancia)
 # algun histograma
+# df_hash = df[(df["Predictor"]=="REC")&(df["b"]<9)].copy()
+# df_no = pd.read_csv(results_path+"RecNoHash.csv")
+# df_no["True"] = df_no["Dataset"].map(true_values)
+# df_no["rel_error"] = (df_no["Result"] - df_no["True"]) / df_no["True"] # for the boxplot, NOT the RSE
 
-df_no = pd.read_csv(results_path+"RecNoHash.csv")
-df_no["True"] = df_mem["Dataset"].map(true_values)
-df_no["rel_error"] = (df_mem["Result"] - df_mem["True"]) / df_mem["True"] # for the boxplot, NOT the RSE
+# df_hash['Hash'] = 'With Hash'
+# df_no['Hash'] = 'No Hash'
+
+# df_h = pd.concat([df_hash, df_no], ignore_index=True)
 
 
 
 
+# plot_density_subgrid(df_h)
+
+# agg_df = df_h.groupby(['b', 'Hash']).agg(
+#     mean_rel_error=('rel_error', 'mean'),
+#     std_rel_error=('rel_error', 'std')
+# ).reset_index()
+
+
+
+
+# plt.figure(figsize=(8, 5))
+
+# for hash_type in agg_df['Hash'].unique():
+#     subset = agg_df[agg_df['Hash'] == hash_type]
+#     plt.plot(subset['b'], subset['mean_rel_error'], marker='o', label=hash_type)
+#     plt.fill_between(
+#         subset['b'],
+#         subset['mean_rel_error'] - subset['std_rel_error'],
+#         subset['mean_rel_error'] + subset['std_rel_error'],
+#         alpha=0.2
+#     )
+
+# plt.xlabel("Memory parameter b")
+# plt.ylabel("Mean relative error $(\\hat{N}-N)/N$")
+# plt.title("Relative error vs Memory parameter (Hash vs No Hash)")
+# plt.grid(True, linestyle=":", linewidth=0.7)
+# plt.legend()
+# plt.tight_layout()
+# plt.show()
 
 ##########################################################################################
 ####    Experiment 2
 ##########################################################################################
-# true_values_syn = {}
-# for data in synthetic_datasets:
-#     trueCard.reset()
-#     val = trueCard.compute(data)
-#     true_values_syn[data] = val
+true_values_syn = {}
+for data in synthetic_datasets:
+    trueCard.reset()
+    val = trueCard.compute(data)
+    true_values_syn[data] = val
 
+print(true_values_syn)
 
 
 
