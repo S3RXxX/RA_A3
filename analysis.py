@@ -1,19 +1,139 @@
 from HLL import HLL
-from utils import results_path, datasets_path, datasets, seeds, execute_save_all
+from utils import results_path, datasets, synthetic_datasets, latex_hash_table, latex_order_table, boxplot, boxplots, latex_hll_rec_table, plot_hll_rec_rse, rel_error_histogram, rel_error_density
 import pandas as pd
+from trueCardinality import TrueCardinality
 
-# execute_save_all(predictors=[HLL], bs=[i for i in range(2, 17)], datasets=["dracula"], output_path=results_path, csv_name="test", seeds=seeds)
 
+
+### True Values
+true_values = {}
+trueCard = TrueCardinality()
+for data in datasets:
+    trueCard.reset()
+    val = trueCard.compute(data)
+    # print(val, data)
+    true_values[data] = val
+
+# for data in synthetic_datasets:
+#     trueCard.reset()
+#     val = trueCard.compute(data)
+#     true_values[data] = val
+
+##########################################################################################
+####    Experiment 1
+##########################################################################################
 
 df = pd.read_csv(results_path+"allComparison.csv")
-print(df.describe())
+# header: Predictor,b,Seed,Dataset,Result
+df["True"] = df["Dataset"].map(true_values)
+df["rel_error"] = (df["Result"] - df["True"]) / df["True"] # for the boxplot, NOT the RSE
 
-summary = (
+# boxplot(df=df[df["b"]==5])
+
+# boxplot(df=df[df["b"]==8])
+# boxplot(df=df[df["b"]==9])
+
+# boxplots(df=df)
+
+
+tables = (
     df
-    .groupby(["Predictor", "b", "Dataset"])["Result"]
-    .agg(["mean", "max", "min"])
+    .groupby(["Predictor", "b", "Dataset"])
+    .agg(
+        mean_estimate=("Result", "mean"),
+        variance=("Result", "var"),
+        true_value=("True", "first"),
+        runs=("Result", "count"),
+    )
     .reset_index()
 )
 
-print("summary:\n", summary)
+# Relative Standard Error
+tables["RSE"] = (tables["variance"] ** 0.5) / tables["true_value"]
+
+# ---- Generate tables for all datasets ----
+# for dataset in sorted(tables["Dataset"].unique()):
+#     print(latex_hash_table(tables, dataset))
+#     print()
+#     print(latex_order_table(tables, dataset))
+#     print("\n" + "="*80 + "\n")
+
+
+
+
+
+
+##########################################################################################
+####    Experiment 4
+##########################################################################################
+df_mem = pd.read_csv(results_path+"draculaMemory2.csv")
+df_mem["True"] = df_mem["Dataset"].map(true_values)
+df_mem["rel_error"] = (df_mem["Result"] - df_mem["True"]) / df_mem["True"] # for the boxplot, NOT the RSE
+
+
+########### boxplots(df=df_mem)
+
+
+tables = (
+    df_mem
+    .groupby(["Predictor", "b", "Dataset"])
+    .agg(
+        mean_estimate=("Result", "mean"),
+        variance=("Result", "var"),
+        true_value=("True", "first"),
+        runs=("Result", "count"),
+    )
+    .reset_index()
+)
+
+# Relative Standard Error
+tables["RSE"] = (tables["variance"] ** 0.5) / tables["true_value"]
+
+# ---- Generate tables for all datasets ----
+# for dataset in sorted(tables["Dataset"].unique()):
+#     print(latex_hll_rec_table(tables, dataset))
+#     print("\n" + "="*80 + "\n")
+
+
+# theoretical_by_m = lambda b: 1.04/math.sqrt(2**b)
+
+# n=9425
+# theoretical_by_k = lambda b: math.sqrt((n/(math.e*2**b))**(1/(2**b))-1)
+
+# plot_hll_rec_rse(df=tables[tables["b"]<10])
+
+### rel_error_histogram(df=df_mem, predictor="REC", b=2)
+# rel_error_density(df=df_mem, b=2)
+### rel_error_histogram(df=df_mem, predictor="REC", b=4)
+# rel_error_density(df=df_mem, b=4)
+### rel_error_histogram(df=df_mem, predictor="REC", b=8)
+# rel_error_density(df=df_mem, b=8)
+
+
+##########################################################################################
+####    Experiment 3
+##########################################################################################
+
+# line plot RSE hash vs no hash (amb variancia)
+# algun histograma
+
+df_no = pd.read_csv(results_path+"RecNoHash.csv")
+df_no["True"] = df_mem["Dataset"].map(true_values)
+df_no["rel_error"] = (df_mem["Result"] - df_mem["True"]) / df_mem["True"] # for the boxplot, NOT the RSE
+
+
+
+
+
+##########################################################################################
+####    Experiment 2
+##########################################################################################
+# true_values_syn = {}
+# for data in synthetic_datasets:
+#     trueCard.reset()
+#     val = trueCard.compute(data)
+#     true_values_syn[data] = val
+
+
+
 
