@@ -554,8 +554,116 @@ def plot_density_subgrid(df, b_values=range(2, 9), n_cols=3):
 
     plt.show()
 
+def boxplot_grid_by_alpha(df):
+    alphas = sorted(df['alpha'].unique())
+    n_cols = 3
+    n_rows = int(np.ceil(len(alphas) / n_cols))
+
+    fig, axes = plt.subplots(
+        n_rows, n_cols,
+        figsize=(5*n_cols, 4*n_rows)
+    )
+    axes = axes.flatten()
+
+    for ax, alpha in zip(axes, alphas):
+        sub = df[df['alpha'] == alpha]
+
+        sns.boxplot(
+            data=sub,
+            x='Predictor',
+            y='rel_error',
+            ax=ax
+        )
+
+        ax.axhline(0, color='black', linestyle='--', linewidth=1)
+        ax.set_title(f"α = {alpha}", pad=14)
+        ax.set_xlabel("")
+        ax.set_ylabel("Relative error")
+
+        ax.tick_params(axis='x', rotation=60)
+
+        ax.grid(True, linestyle=":", linewidth=0.7)
+
+    for ax in axes[len(alphas):]:
+        fig.delaxes(ax)
+
+    plt.tight_layout()
+    plt.show()
+
+def boxplot_grid_by_n(df):
+    # 🔹 Exclude degenerate Zipf case
+    df_filt = df[df['alpha'] != 50.0]
+
+    ns = sorted(df_filt['n'].unique())
+    n_cols = 3
+    n_rows = int(np.ceil(len(ns) / n_cols))
+
+    fig, axes = plt.subplots(
+        n_rows, n_cols,
+        figsize=(5*n_cols, 4*n_rows)
+    )
+    axes = axes.flatten()
+
+    for ax, n in zip(axes, ns):
+        sub = df_filt[df_filt['n'] == n]
+
+        sns.boxplot(
+            data=sub,
+            x='Predictor',
+            y='rel_error',
+            ax=ax
+        )
+
+        ax.axhline(0, color='black', linestyle='--', linewidth=1)
+        ax.set_title(f"n = {n}", pad=14)
+        ax.set_xlabel("")
+        ax.set_ylabel("Relative error")
+        ax.tick_params(axis='x', rotation=60)
+        ax.grid(True, linestyle=":", linewidth=0.7)
+
+    for ax in axes[len(ns):]:
+        fig.delaxes(ax)
+
+    plt.tight_layout()
+    plt.show()
 
 
+def boxplot_grid_by_Nmult(df):
+    # 🔹 Exclude degenerate Zipf case
+    df_filt = df[df['alpha'] != 50.0]
+
+    mults = sorted(df_filt['N_mult'].unique())
+    n_cols = 3
+    n_rows = int(np.ceil(len(mults) / n_cols))
+
+    fig, axes = plt.subplots(
+        n_rows, n_cols,
+        figsize=(5*n_cols, 4*n_rows)
+    )
+    axes = axes.flatten()
+
+    for ax, mult in zip(axes, mults):
+        sub = df_filt[df_filt['N_mult'] == mult]
+
+        sns.boxplot(
+            data=sub,
+            x='Predictor',
+            y='rel_error',
+            ax=ax
+        )
+
+        ax.axhline(0, color='black', linestyle='--', linewidth=1)
+        ax.set_title(f"N / n = {int(mult)}", pad=14)
+        ax.set_xlabel("")
+        ax.set_ylabel("Relative error")
+        ax.tick_params(axis='x', rotation=60)
+        ax.grid(True, linestyle=":", linewidth=0.7)
+
+    for ax in axes[len(mults):]:
+        fig.delaxes(ax)
+
+    plt.tight_layout()
+    plt.show()
 
 if __name__=="__main__":
     # print("0", to_bin(0), len(to_bin(0)))

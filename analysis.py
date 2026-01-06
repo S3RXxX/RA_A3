@@ -3,7 +3,9 @@ from utils import results_path, datasets, synthetic_datasets, plot_density_subgr
 import pandas as pd
 from trueCardinality import TrueCardinality
 import matplotlib.pyplot as plt
-
+import seaborn as sns
+import numpy as np
+from utils import boxplot_grid_by_Nmult, boxplot_grid_by_alpha, boxplot_grid_by_n
 
 
 ### True Values
@@ -169,7 +171,69 @@ for data in synthetic_datasets:
     val = trueCard.compute(data)
     true_values_syn[data] = val
 
-print(true_values_syn)
 
 
+rows = []
+for key, value in true_values_syn.items():
+    parts = key.split('_')
+    N = int(parts[1])
+    n = int(parts[2])
+    alpha = float(parts[3])
+    N_mult = N / n  # N multiplier
+    rows.append({'N': N, 'n': n, 'alpha': alpha, 'true_cardinality': value, 'N_mult': N_mult})
 
+df = pd.DataFrame(rows)
+
+# ---- Plot ----
+unique_alphas = sorted(df['alpha'].unique())
+n_cols = 3
+n_rows = int(np.ceil(len(unique_alphas)/n_cols))
+
+fig, axes = plt.subplots(n_rows, n_cols, figsize=(5*n_cols, 4*n_rows), sharex=False, sharey=False)
+axes = axes.flatten()
+
+for ax, alpha in zip(axes, unique_alphas):
+    sub = df[df['alpha'] == alpha]
+    sns.lineplot(
+        data=sub,
+        x='n',
+        y='true_cardinality',
+        hue='N_mult',
+        marker='o',
+        linewidth=2,
+        ax=ax
+    )
+    ax.set_title(f"alpha = {alpha}", fontsize=12, pad=15)
+    ax.set_xlabel("n (number of unique elements)", fontsize=10)
+    ax.set_ylabel("True cardinality", fontsize=10)
+    ax.grid(True, linestyle=":", linewidth=0.7)
+    ax.legend(title="N/n multiplier", loc='upper left', fontsize=9)
+
+# Remove unused axes
+for ax in axes[len(unique_alphas):]:
+    fig.delaxes(ax)
+
+plt.tight_layout()
+plt.show()
+
+
+df = pd.read_csv(results_path+"syntheticData.csv")
+### Predictor,b,Seed,Dataset,Result
+
+### add N,n,alpha, N_mult
+def parse_dataset(name):
+    _, N, n, alpha = name.split("_")
+    return int(N), int(n), float(alpha)
+
+df[['N', 'n', 'alpha']] = df['Dataset'].apply(
+    lambda x: pd.Series(parse_dataset(x))
+)
+
+df['N_mult'] = df['N'] / df['n']
+df['True'] = df['Dataset'].map(true_values_syn)
+df['rel_error'] = (df['Result'] - df['True']) / df['True']
+
+boxplot_grid_by_n(df)
+
+boxplot_grid_by_alpha(df)
+boxplot_grid_by_Nmult(df)
